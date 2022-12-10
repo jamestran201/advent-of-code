@@ -51,22 +51,23 @@ func (c *Cpu) collectSignalStrength() {
 }
 
 type CarthodeTube struct {
-	screen [6][40]string
-	row    int64
+	screen [40]string
 	col    int64
 }
 
 func (c *CarthodeTube) draw(spriteMidIndex int64) {
 	if c.col == spriteMidIndex-1 || c.col == spriteMidIndex || c.col == spriteMidIndex+1 {
-		c.screen[c.row][c.col] = "#"
+		c.screen[c.col] = "#"
 	} else {
-		c.screen[c.row][c.col] = "."
+		c.screen[c.col] = "."
 	}
 
 	c.col++
-	if c.col == int64(len(c.screen[0])) {
-		c.row++
+	if c.col == int64(len(c.screen)) {
+		fmt.Println(c.screen)
+
 		c.col = 0
+		c.screen = [40]string{}
 	}
 
 }
@@ -93,9 +94,4 @@ func main() {
 	}
 
 	fmt.Println("Part 1:", cpu.totalSignalStrength)
-
-	fmt.Println("Part 2:")
-	for _, row := range cpu.tube.screen {
-		fmt.Println(row)
-	}
 }
