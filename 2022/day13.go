@@ -4,10 +4,26 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"sort"
 	"strconv"
 )
 
-func main() {
+type ByPacketOrder []string
+
+// func (a ByAge) Len() int           { return len(a) }
+// func (a ByAge) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+// func (a ByAge) Less(i, j int) bool { return a[i].Age < a[j].Age }
+
+func (b ByPacketOrder) Len() int { return len(b) }
+
+func (b ByPacketOrder) Swap(i, j int) { b[i], b[j] = b[j], b[i] }
+
+func (b ByPacketOrder) Less(i, j int) bool {
+	result := compareLists(b[i], b[j])
+	return result == "ordered"
+}
+
+func part1() {
 	// file, err := os.Open("day13_sample_input.txt")
 	file, err := os.Open("day13_input.txt")
 	if err != nil {
@@ -50,6 +66,53 @@ func main() {
 	}
 
 	fmt.Println("Result", resultPart1)
+}
+
+func part2() {
+	// file, err := os.Open("day13_sample_input.txt")
+	file, err := os.Open("day13_input.txt")
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	defer file.Close()
+
+	packets := []string{}
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line := scanner.Text()
+
+		if line == "" {
+			continue
+		}
+
+		packets = append(packets, line)
+	}
+
+	packets = append(packets, "[[2]]", "[[6]]")
+	sort.Sort(ByPacketOrder(packets))
+
+	for _, v := range packets {
+		fmt.Println(v)
+	}
+
+	result := 1
+	for i, v := range packets {
+		if v == "[[2]]" {
+			result *= (i + 1)
+		} else if v == "[[6]]" {
+			result *= (i + 1)
+			break
+		}
+	}
+
+	fmt.Println("Result:", result)
+}
+
+func main() {
+	// part1()
+	part2()
 }
 
 func compareLists(lp string, rp string) string {
